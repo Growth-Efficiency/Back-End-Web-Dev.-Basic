@@ -93,3 +93,20 @@ JSP
 - 내추럴 템플릿 : HTML의 모양을 유지하면서 뷰 템플릿 적용 가능.
 - 스프링 MVC와 강력한 기능 통합
 - 최선의 선택, 단 성능은 프리마커, 벨로시티가 더 빠름
+
+
+------------------------------------------------------------------------------------------------------------------------------------------
+
+※ 2일차 ※
+
+HTTP 요청 메시지 로그 콘솔로 확인하기.
+-> application.properties에 logging.level.org.apache.coyote.http11=debug 입력
+-> 성능저하 발생할 수 있으니 개발단계에서만 사용하자.
+
+GET방식 Query 파라미터 값 받아올때.
+HttpServletRequest request;
+request.getParameter('name'); 중복시 첫번째 값을 반환함.
+request.getParameterValues('name') 하면 중복 파라미터 값을 배열로 반환함.(중복으로는 잘 사용안함.)
+
+POST HTML Form형식으로 데이터를 전송할땐 HTTP 메시지 바디에 해당 데이터를 포함해서 보내기때문에
+바디에 포함된 데이터가 어떤 형식인지 content-type을 꼭 지정해 주어야 한다. 'application/x-www-form-urlencoded'
