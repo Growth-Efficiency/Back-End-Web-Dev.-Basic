@@ -9,7 +9,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import javax.servlet.annotation.WebServlet;
 
 @WebServlet(name = "memberSaveServlet", urlPatterns = "/servlet/members/save")
 public class MemberSaveServlet extends HttpServlet {
