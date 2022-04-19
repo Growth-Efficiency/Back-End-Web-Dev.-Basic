@@ -115,3 +115,11 @@
 - 참고
   - React, Vew.js 를 CSR + SSR 동시에 지원하는 웹 프레임워크도 있음.
   - SSR 을 사용하더라도, 자바스크립트를 사용해서 화면 일부를 동적으로 변경할 수 있음.
+
+## 요청 파라미터 vs HTTP 메시지 바디
+- 요청 파라미터를 조회하는 기능(get or Html Form): `@RequestParam`, `@ModelAttribute`
+- HTTP 메시지 바디를 직접 조회하는기능: `@RequestBody`
+
+### @ResponseBody
+- `@ResponseBody` 를 사용하면 응답 결과를 HTTP 메시지 바디에 직접 담아서 전달할 수 있다.
+- 물론 이 경우에도 view를 사용하지 않는다.
