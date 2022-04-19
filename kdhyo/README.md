@@ -123,3 +123,6 @@
 ### @ResponseBody
 - `@ResponseBody` 를 사용하면 응답 결과를 HTTP 메시지 바디에 직접 담아서 전달할 수 있다.
 - 물론 이 경우에도 view를 사용하지 않는다.
+
+### @RequestBody는 생략 불가능
+- `@RequestBody` 를 생략하면, `@ModelAttribute` 가 붙어서 HTTP 메시지 바디가 아니라, 요청 파라미터 정보를 읽으려고 한다.
