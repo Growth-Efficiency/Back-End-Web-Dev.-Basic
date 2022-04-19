@@ -115,3 +115,101 @@
 - 참고
   - React, Vew.js 를 CSR + SSR 동시에 지원하는 웹 프레임워크도 있음.
   - SSR 을 사용하더라도, 자바스크립트를 사용해서 화면 일부를 동적으로 변경할 수 있음.
+
+## 요청 파라미터 vs HTTP 메시지 바디
+- 요청 파라미터를 조회하는 기능(get or Html Form): `@RequestParam`, `@ModelAttribute`
+- HTTP 메시지 바디를 직접 조회하는기능: `@RequestBody`
+
+### @ResponseBody
+- `@ResponseBody` 를 사용하면 응답 결과를 HTTP 메시지 바디에 직접 담아서 전달할 수 있다.
+- 물론 이 경우에도 view를 사용하지 않는다.
+
+### @RequestBody는 생략 불가능
+- `@RequestBody` 를 생략하면, `@ModelAttribute` 가 붙어서 HTTP 메시지 바디가 아니라, 요청 파라미터 정보를 읽으려고 한다.
+
+## HTTP 메시지 컨버터
+
+### @ResponseBody 를 사용할 경우
+- HTTP 의 Body 에 문자 내용을 직접 반환
+- `viewResolver` 대신 `HttpMessageConverter`가 동작
+
+### 스프링 MVC 에서는 다음의 경우 HTTP 메시지 컨버터를 적용한다.
+- HTTP 요청: `@RequestBody` or `HttpEntity` or `RequestEntity`
+- HTTP 응답: `@ResponseBody` or `HttpEntity` or `ResponseEntity`
+
+### HttpMessageConverter
+- HTTP 메시지 컨버터는 HTTP 요청, HTTP 응답 둘 다 사용된다.
+  - `canRead()`, `canWrite()`: 메시지 컨버터가 해당 클랫, 미디어 타입을 지원하는지 체크
+  - `read()`, `write()`: 메시지 컨버터를 통해서 메시지를 읽고 쓰는 기능
+
+### 스프링 부트 기본 메시지 컨버터
+> 스프링 부트는 다양한 메시지 컨버터를 제공하는데, 대상 클래스 타입과 미디어 타입 둘을 체크해서  
+> 사용여부를 결정한다. 만약 만족하지 않으면 다음 메시지 컨버터로 우선순위가 넘어간다.
+
+- 0 = ByteArrayHttpMessageConverter
+- 1 = StringHttpMessageConverter
+- 2 = MappingJackson2HttpMessageConverter
+
+> 몇 가지 주요 메시지 컨버터를 살펴보자.
+
+- ByteArrayHttpMessageConverter : byte[] 데이터를 처리한다.
+  - 클래스 타입: byte[] , 미디어타입: */* ,
+  - 요청 예) @RequestBody byte[] data
+  - 응답 예) @ResponseBody return byte[] 쓰기 미디어타입 application/octet-stream
+- StringHttpMessageConverter : String 문자로 데이터를 처리한다.
+  - 클래스 타입: String , 미디어타입: */*
+  - 요청 예) @RequestBody String data
+  - 응답 예) @ResponseBody return "ok" 쓰기 미디어타입 text/plain
+- MappingJackson2HttpMessageConverter : application/json
+  - 클래스 타입: 객체 또는 HashMap , 미디어타입 application/json 관련
+  - 요청 예) @RequestBody HelloData data
+  - 응답 예) @ResponseBody return helloData 쓰기 미디어타입 application/json 관련
+  
+#### StringHttpMessageConverter
+> String의 우선순위가 더 높고, String은 content-type 을 모두 허용하기 때문에 String 메시지 컨버터가 실행된다.
+  
+
+```
+content-type: application/json
+
+@RequestMapping
+void hello(@RequetsBody String data) {}
+```
+
+#### MappingJackson2HttpMessageConverter
+> byte, String이 아니기 때문에 다음인 json에서 일치하여 jackson 실행.
+  
+```
+content-type: application/json
+
+@RequestMapping
+void hello(@RequetsBody HelloData data) {}
+```
+
+#### 예외 발생
+> content-type 은 html이지만, 파라미터는 객체이기 떄문에 일치하는 게 없어 예외 발생
+  
+```
+content-type: text/html
+
+@RequestMapping
+void hello(@RequetsBody HelloData data) {}
+```
+
+### HTTP 요청 데이터 읽기
+- HTTP 요청이 오고, 컨트롤러에서 `@RequestBody`, `HttpEntity` 파라미터를 사용한다.
+- 메시지 컨버터가 메시지를 읽을 수 있는지 확인하기 위해 `canRead()` 를 호출한다.
+  - 대상 클래스 타입을 지원하는가.
+    - 예) `@RequestBody` 의 대상 클래스 (`byte[]`, `String`, `HelloData`)
+  - HTTP 요청의 Content-Type 미디어 타입을 지원하는가.
+    - 예) `text/plain`, `application/json`, `*/*`
+- `canRead()` 조건을 만족하면, `read()` 를 호출해서 객체 생성하고, 반환한다.
+
+### HTTP 응답 데이터 생성
+- 컨트롤러에서 `@ResponseBody`, `HttpEntity` 로 값이 반환된다.
+- 메시지 컨버터가 메시지를 쓸 수 있는지 확인하기 위해 `canWrite()` 를 호출한다.
+  - 대상 클래스 타입을 지원하는가.
+    - 예) return 의 대상 클래스 (`byte[]`, `String`, `HelloData`)
+  - HTTP 요청의 Accept 미디어 타입을 지원하는가. (더 정확히는 `@RequestMapping`의 `produces`)
+    - 예) `text/plain`, `application/json`, `*/*`
+- `canWrite()` 조건에 만족하면 `write()` 를 호출해서 HTTP 응답 메시지 바디에 데이터를 생성한다.
