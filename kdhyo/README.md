@@ -120,6 +120,10 @@
 - 요청 파라미터를 조회하는 기능(get or Html Form): `@RequestParam`, `@ModelAttribute`
 - HTTP 메시지 바디를 직접 조회하는기능: `@RequestBody`
 
+### 파라미터 지정 시 스프링 규칙
+- `String`, `int`, `Integer` 와 같은 단순 타입 = `@RequestParam`
+- 나머지 = `@ModelAttribute` (argument resolver 로 지정해둔 타입 외)
+
 ### @ResponseBody
 - `@ResponseBody` 를 사용하면 응답 결과를 HTTP 메시지 바디에 직접 담아서 전달할 수 있다.
 - 물론 이 경우에도 view를 사용하지 않는다.
@@ -159,7 +163,7 @@
 - StringHttpMessageConverter : String 문자로 데이터를 처리한다.
   - 클래스 타입: String , 미디어타입: */*
   - 요청 예) @RequestBody String data
-  - 응답 예) @ResponseBody return "ok" 쓰기 미디어타입 text/plain
+  - 응답 예) @ResponseBody return "ok" 쓰기 미디어타입 text/plainRequestDispatcher
 - MappingJackson2HttpMessageConverter : application/json
   - 클래스 타입: 객체 또는 HashMap , 미디어타입 application/json 관련
   - 요청 예) @RequestBody HelloData data
@@ -213,3 +217,8 @@ void hello(@RequetsBody HelloData data) {}
   - HTTP 요청의 Accept 미디어 타입을 지원하는가. (더 정확히는 `@RequestMapping`의 `produces`)
     - 예) `text/plain`, `application/json`, `*/*`
 - `canWrite()` 조건에 만족하면 `write()` 를 호출해서 HTTP 응답 메시지 바디에 데이터를 생성한다.
+
+
+## 타임리프
+
+> 타임리프처럼 순수 HTML 을 그대로 유지하면서 뷰 템플릿도 사용할 수 있는 특징을 `네츄럴 템플릿` 이라 한다.
