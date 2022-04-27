@@ -162,7 +162,22 @@ Spring MVC 동작 순서
 9. View 렌더링(Dispatcher Servlet -> View) : 뷰를 통해서 뷰를 렌더링 한다.
 * 다른 뷰는 실제 뷰를 렌더링 하지만 JSP의 경우 'forward()'를 통해서 해당 JSP로 이동해야 렌더링이 된다.
 
+------------------------------------------------------------------------------------------------------------------------------------------
 
+※ 7일차 ※
 
+@RestController는 반환할때 String으로 반환 받으면 그 이름으로 뷰를 찾지않고 그냥 바로 그 String을 HTTP 메시지 바디에 던져준다.
 
+LOG 레벨 : TRACE > DEBUG > INFO > WARN > ERROR
+개발서버는 debug로 운영서버는 info로 보통 출력함.
 
+application.properties에 LOG 보여줄 레벨 설정 하는법.
+- 전체 로그 레벨 설정 (내 패키지의 모든 기본설정 = info) : logging.level.root=info
+- 원하는 패키지와 그 하위 로그 레벨 설정 (더 깊숙하므로 우선권 가짐) : logging.level.hello.springmvc=debug
+
+@RequestMapping은 url을 다중 설정도 가능하다.
+- @RequestMapping({"hello", "bye"})
+
+아래와 같이 url에 있는 값도도 꺼낼수 있음.
+-  @GetMapping("/mapping/{userId}")
+-  public String mappingPath(@PathVariable("userId") String data) {}
