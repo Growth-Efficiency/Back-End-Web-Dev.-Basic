@@ -181,3 +181,34 @@ application.properties에 LOG 보여줄 레벨 설정 하는법.
 아래와 같이 url에 있는 값도도 꺼낼수 있음.
 -  @GetMapping("/mapping/{userId}")
 -  public String mappingPath(@PathVariable("userId") String data) {}
+
+------------------------------------------------------------------------------------------------------------------------------------------
+
+※ 8일차 ※
+코딩
+------------------------------------------------------------------------------------------------------------------------------------------
+
+※ 9일차 ※
+
+요청 파라미터를 조회하는 기능: @RequestParam , @ModelAttribute
+HTTP 메시지 바디를 직접 조회하는 기능: @RequestBody
+헤더 정보가 필요하다면 : HttpEntity<DTO> 사용해서 꺼내기 또는 @RequestHeader
+
+스프링 부트는 클래스패스의 다음 디렉토리에 있는 정적 리소스를 제공해준다.
+/static, /public, /resources, /META-INF/resources
+ex) src/main/resources/static/basic/hello-form.html 이면
+-> http://localhost:8080/basic//hello-form.html 처럼 실행하면 된다.
+
+타임리프 bulid.gradle에 추가했으면
+아래와 같은 값이 디폴트로 application.properties에 추가된다. (변경하고 싶으면 아래값을 넣고 경로 변경하면 됨.)
+spring.thymeleaf.prefix=classpath:/templates/
+spring.thymeleaf.suffix=.html
+
+RequestMappingHandlerAdapter 동작 방식 설명.
+1. Dispatcher에서 핸들러를 찾고 -> 핸들러 어댑터를 찾고 -> 리퀘스트 매핑 핸들러어댑터를 실행한다.
+2. 이때 핸들러 어댑터는 Argument Resolver(HandlerMethodArgumentResolver)를 호출하여 컨트롤러(핸들러)가 필요로 하는 다양한 파라미터를 생성한다.
+3. 다양한 파라미터(@RequestBody, HttpEntity, Model  등)를 생성할때 Argument Resolver가 HTTP 메세지 컨버터를 호출하여 요청 데이터를 생성한다.
+4. 생성한 파라미터들을 컨트롤러(핸들러)에 넘기고 다시 응답(response)를 할때 ReturnValueHandler를 호출한다.
+5. 응답 데이터(@ResponseBody, HttpEntity, ModelAndView  등)를 또 HTTP메세지 컨버터를 사용하여 다시 만들어 핸들러 어댑터로 반환한다.
+
+Spring 기능 확장 하고 싶을때는 WebMvcController를 확장하면 된다.(그 안에 엄청 많이 확장할 수 있게 되어있음)
