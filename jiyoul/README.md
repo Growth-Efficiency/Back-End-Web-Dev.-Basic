@@ -178,9 +178,9 @@ application.properties에 LOG 보여줄 레벨 설정 하는법.
 @RequestMapping은 url을 다중 설정도 가능하다.
 - @RequestMapping({"hello", "bye"})
 
-아래와 같이 url에 있는 값도도 꺼낼수 있음.
--  @GetMapping("/mapping/{userId}")
--  public String mappingPath(@PathVariable("userId") String data) {}
+@PathVariable 하면 URL꺼 빼올수 있음. (다중도 가능)
+-> @GetMapping("/mapping/user/{userId}/orders/{orderId}")
+-> public String mapping(@PathVariable String userId, @PathVariable String orderId)
 
 ------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -212,3 +212,20 @@ RequestMappingHandlerAdapter 동작 방식 설명.
 5. 응답 데이터(@ResponseBody, HttpEntity, ModelAndView  등)를 또 HTTP메세지 컨버터를 사용하여 다시 만들어 핸들러 어댑터로 반환한다.
 
 Spring 기능 확장 하고 싶을때는 WebMvcController를 확장하면 된다.(그 안에 엄청 많이 확장할 수 있게 되어있음)
+
+------------------------------------------------------------------------------------------------------------------------------------------
+
+※ 10일차 ※
+
+싱글톤을 보장하는 곳에서 여러군데에서 사용할땐 아래와 같이 동시성을 보장하는 것으로 해주어야 한다.
+HashMap -> ConcurrentHashMap, Long -> AtomicLong
+
+타임리프
+변수 표현식 : ${param}
+URL링크 표현식 : @{URL}
+반복 표현식 : th:each
+내용 변경 : th:text
+속성 변경 : th:onclick
+
+th:href="@{/basic/items/${itemId}(itemId=${item.id})}" 를 아래와 같이 리터럴 대체 문법으로 바꿀수 있다.
+-> th:href="@{|/basic/items/${item.id}|}"
