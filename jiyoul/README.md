@@ -226,6 +226,14 @@ URL링크 표현식 : @{URL}
 반복 표현식 : th:each
 내용 변경 : th:text
 속성 변경 : th:onclick
+데이터 변경 : th:value
 
 th:href="@{/basic/items/${itemId}(itemId=${item.id})}" 를 아래와 같이 리터럴 대체 문법으로 바꿀수 있다.
 -> th:href="@{|/basic/items/${item.id}|}"
+
+------------------------------------------------------------------------------------------------------------------------------------------
+
+※ 11일차 ※
+
+스프링에선 redirect:/~ 로 편리하게 리다이렉트를 사용할 수 있다.
+-> return "redirect:/basic/items/{itemId}"; 이렇게 하면 itemId 이것도 @PathVariable Long itemId의 값으로 들어간다.
